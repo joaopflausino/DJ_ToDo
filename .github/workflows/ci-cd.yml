@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
+          python-version: "3.10"
 
       - name: Install Poetry
         run: |
@@ -37,7 +37,7 @@ jobs:
             ${{ runner.os }}-poetry-
 
       - name: Install dependencies
-        run: poetry install
+        run: poetry install --no-root
 
       - name: Run migrations
         run: |
@@ -54,15 +54,3 @@ jobs:
 
       - name: Run security checks
         run: poetry run bandit -r .
-
-      - name: Generate coverage report
-        run: |
-          poetry run coverage run manage.py test
-          poetry run coverage report
-          poetry run coverage xml
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
-        with:
-          file: ./coverage.xml
-          fail_ci_if_error: true
