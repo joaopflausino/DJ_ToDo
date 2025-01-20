@@ -1,0 +1,68 @@
+name: Django CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      sqlite:
+        image: alpine:latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project true
+
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v3
+        with:
+          path: ./.venv
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Run migrations
+        run: |
+          poetry run python manage.py makemigrations
+          poetry run python manage.py migrate
+
+      - name: Run tests
+        run: poetry run python manage.py test
+
+      - name: Run linting
+        run: |
+          poetry run flake8 .
+          poetry run black . --check
+
+      - name: Run security checks
+        run: poetry run bandit -r .
+
+      - name: Generate coverage report
+        run: |
+          poetry run coverage run manage.py test
+          poetry run coverage report
+          poetry run coverage xml
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: true
