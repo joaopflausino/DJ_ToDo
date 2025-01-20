@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "dj-todo"
+version = "0.1.0"
+description = ""
+authors = ["João Pedro Flausino <joaoxpp2001@hotmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.1.5"
+logging = "^0.4.9.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
