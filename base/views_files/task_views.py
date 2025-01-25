@@ -33,10 +33,15 @@ class TaskList(LoginRequiredMixin, ListView):
         return context
 
 
+
 class TaskDetail(LoginRequiredMixin, DetailView):
     model = Task
     context_object_name = 'task'
     template_name = 'base/task.html'
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)
+
 
 
 class TaskCreate(LoginRequiredMixin, CreateView):
@@ -56,30 +61,38 @@ class TaskCreate(LoginRequiredMixin, CreateView):
         return super(TaskCreate, self).form_valid(form)
 
 
+
 class TaskUpdate(LoginRequiredMixin, UpdateView):
     model = Task
     fields = ['title', 'description', 'complete']
     success_url = reverse_lazy('tasks')
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)
+
 
 
 class DeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     context_object_name = 'task'
     success_url = reverse_lazy('tasks')
+
     def get_queryset(self):
-        owner = self.request.user
-        tasks = Task.objects.filter(user=owner)
-        logger.info(f"User {owner.username} accessed delete view for tasks: {tasks}")
-        return tasks
+        return Task.objects.filter(user=self.request.user)
+
+
 
 class TaskReorder(View):
     def post(self, request):
         form = PositionForm(request.POST)
-
         if form.is_valid():
-            positionList = form.cleaned_data["position"].split(',')
-
+            position_ids = form.cleaned_data["position"].split(',')
+            
             with transaction.atomic():
-                self.request.user.set_task_order(positionList)
-
+                for idx, task_id in enumerate(position_ids):
+                    Task.objects.filter(
+                        id=int(task_id),
+                        user=request.user
+                    ).update(_order=idx)
+        
         return redirect(reverse_lazy('tasks'))
