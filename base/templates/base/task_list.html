@@ -37,27 +37,19 @@
 
 
 <div id="tasklist" class="task-items-wrapper">
-    {% for task in tasks %}
-    <div class="task-wrapper" data-position="{{task.pk}}">
-        <div class="task-title">
-            {% if task.complete %}
-            <div class="task-complete-icon"></div>
-            <i><s><a href="{% url 'task-update' task.id %}">{{task}}</a></s></i> {% else %}
-            <div class="task-incomplete-icon"></div>
-            <a href="{% url 'task-update' task.id %}">{{task}}</a> {% endif %}
-        </div>
-        <div class="task-controls">
-            <a class="delete-link" href="{% url 'task-delete' task.id %}">&#215;</a>
-            <span class="handle">&nbsp;&#10247;</span>
-        </div>
+{% for task in tasks %}
+<div class="task-wrapper">
+    <div class="task-title">
+        {% if task.complete %}
+        <div class="task-complete-icon"></div>  <!-- This is the element we're testing -->
+        <i><s><a href="#">{{task}}</a></s></i>
+        {% else %}
+        <div class="task-incomplete-icon"></div>
+        <a href="#">{{task}}</a>
+        {% endif %}
     </div>
-
-    {% empty %}
-    <div style="text-align: center; padding-bottom: 10px; line-height: 1em;">
-        <h3>No new tasks are created.</h3>
-        <h3>Create a <a style="text-decoration: none; color: #e53935;" href="{% url 'task-create' %}">New task</a> ! </h3>
-    </div>
-    {% endfor %}
+</div>
+{% endfor %}
 </div>
 
 <script>
