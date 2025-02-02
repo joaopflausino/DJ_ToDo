@@ -4,3 +4,4 @@ extend-ignore = E203
 exclude = .git,__pycache__,dist,*.egg-info,.venv,migrations
 per-file-ignores =
     base/views.py:F401
+    base/tests.py:F841

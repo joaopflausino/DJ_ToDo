@@ -80,6 +80,12 @@ class TaskViewTest(TestCase):
         self.assertEqual(Task.objects.count(), 2)
 
     def test_task_update_view(self):
+        url = reverse('task-update', args=[self.task.pk])
+        response = self.client.post(url, {
+            'title': 'Updated title',
+            'description': 'Updated description',
+            'complete': True
+        })
         self.task.refresh_from_db()
         self.assertEqual(self.task.title, 'Updated title')
         self.assertTrue(self.task.complete)
