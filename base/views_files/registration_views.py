@@ -9,10 +9,10 @@ logger = logging.getLogger(__name__)
 
 
 class RegisterPage(FormView):
-    template_name = 'base/register.html'
+    template_name = "base/register.html"
     form_class = UserCreationForm
     redirect_authenticated_user = True
-    success_url = reverse_lazy('tasks')
+    success_url = reverse_lazy("tasks")
 
     def form_valid(self, form):
         user = form.save()
@@ -23,5 +23,5 @@ class RegisterPage(FormView):
 
     def get(self, *args, **kwargs):
         if self.request.user.is_authenticated:
-            return redirect('tasks')
+            return redirect("tasks")
         return super().get(*args, **kwargs)

@@ -6,9 +6,9 @@ logger = logging.getLogger(__name__)
 
 
 class CustomLoginView(LoginView):
-    template_name = 'base/login.html'
+    template_name = "base/login.html"
     redirect_authenticated_user = True
 
     def get_success_url(self):
         logger.info("Successful login. Redirecting to tasks")
-        return reverse_lazy('tasks')
+        return reverse_lazy("tasks")
