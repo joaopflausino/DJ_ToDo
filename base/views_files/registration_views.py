@@ -7,6 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class RegisterPage(FormView):
     template_name = 'base/register.html'
     form_class = UserCreationForm
@@ -17,10 +18,10 @@ class RegisterPage(FormView):
         user = form.save()
         if user is not None:
             login(self.request, user)
-            logger.info(f"User registered and logged in: {user.username}")
-        return super(RegisterPage, self).form_valid(form)
+            logger.info(f"User registered: {user.username}")
+        return super().form_valid(form)
 
     def get(self, *args, **kwargs):
         if self.request.user.is_authenticated:
             return redirect('tasks')
-        return super(RegisterPage, self).get(*args, **kwargs)
+        return super().get(*args, **kwargs)

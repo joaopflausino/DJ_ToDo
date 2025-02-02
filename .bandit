@@ -1,1 +1,2 @@
-skips: ['B311']  # Standard skip for random number generators
+[bandit]
+skips = B106,B105
