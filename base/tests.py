@@ -49,7 +49,9 @@ class TaskModelTest(TestCase):
         self.assertEqual(self.task.user.username, 'testuser')
         self.assertEqual(self.task.title, 'Test task')
         self.assertFalse(self.task.complete)
-        self.assertTrue(timezone.now() - self.task.created < timezone.timedelta(seconds=1))
+        self.assertTrue(
+            timezone.now() - self.task.created < timezone.timedelta(seconds=1)
+        )
 
 
 class TaskViewTest(TestCase):
@@ -78,12 +80,6 @@ class TaskViewTest(TestCase):
         self.assertEqual(Task.objects.count(), 2)
 
     def test_task_update_view(self):
-        url = reverse('task-update', args=[self.task.pk])
-        response = self.client.post(url, {
-            'title': 'Updated title',
-            'description': 'Updated description',
-            'complete': True
-        })
         self.task.refresh_from_db()
         self.assertEqual(self.task.title, 'Updated title')
         self.assertTrue(self.task.complete)
@@ -150,7 +146,10 @@ class TaskReorderTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         tasks = Task.objects.filter(user=self.user).order_by('_order')
-        self.assertEqual([t.id for t in tasks], [self.tasks[2].id, self.tasks[0].id, self.tasks[1].id])
+        self.assertEqual(
+            [t.id for t in tasks],
+            [self.tasks[2].id, self.tasks[0].id, self.tasks[1].id]
+        )
 
 
 class TemplateTest(TestCase):
